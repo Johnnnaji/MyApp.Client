@@ -1,24 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
+interface WeatherInformation {
+  summary: string
+}
+
 function App() {
+  const [weatherData, setWeatherData] = useState<WeatherInformation[]>([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      const response = await fetch("https://localhost:7187/api/WeatherForecast");
+      const weatherResults = await response.json();
+      setWeatherData(weatherResults)
+    }
+    getData();
+
+  }, []);
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>There are {weatherData.length} reports</h1>
+      <ul>
+        {weatherData.map(w => 
+        <li>{w.summary}</li>
+      )}
+      </ul>
+      
     </div>
   );
 }
